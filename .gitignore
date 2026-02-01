@@ -1,0 +1,28 @@
+# Build artifacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Training artifacts (large files)
+*.zip
+*.pth
+tensorboard_logs*/
+training_logs/
+exported_csv/
+sac_models/
