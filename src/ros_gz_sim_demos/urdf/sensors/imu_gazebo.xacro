@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot>
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <always_on>1</always_on>
+      <update_rate>50</update_rate>
+      <visualize>true</visualize>
+      <topic>imu</topic>
+      <enable_metrics>true</enable_metrics>
+    </sensor>
+  </gazebo>
+</robot>
