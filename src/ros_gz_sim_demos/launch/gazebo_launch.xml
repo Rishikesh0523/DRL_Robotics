@@ -1,0 +1,69 @@
+<launch>
+    <let name="urdf_path" value="$(find-pkg-share ros_gz_sim_demos)/urdf/robot/mech_mobile.urdf.xacro"/>
+    <let name="worlds_path" value="$(find-pkg-share ros_gz_sim_demos)/worlds/world.sdf" />
+    
+    <!-- to launch empty word
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+        <arg name="gz_args" value="-r -v 4 empty.sdf"/>
+        <arg name="on_exit_shutdown" value="true"/>
+    </include>
+    -->
+    <include file="$(find-pkg-share ros_gz_sim_demos)/launch/world.launch.py">
+        <arg name="on_exit_shutdown" value="true"/>
+    </include>
+
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')"/>
+        <remap from="/tf" to="tf"/>
+        <remap from="/tf_static" to="tf_static" />
+    </node>
+
+
+
+
+       <!-- Add this to connect the LiDAR frame to your TF tree -->
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="lidar_frame_fix"  
+      args="0 0 0 -0.707 0 0 0.707 base_lidar_link ros_gz_sim_demos/base_link/lidar_sensor"/>
+
+      
+
+    <!-- Add Static Transforms for Missing Frames -->
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="map_to_odom" 
+          args="0 0 0 0 0 0 map odom"/>
+    <node pkg="tf2_ros" exec="static_transform_publisher" name="odom_to_base_link" 
+          args="0 0 0 0 0 0 odom base_link"/>
+    
+
+
+
+
+    <node pkg="rviz2" exec="rviz2" output="screen">
+        <param name="use_sim_time" value="true" />
+    </node>
+
+    <node pkg="ros_gz_sim" exec="create"
+          args="-topic robot_description -name ros_gz_sim_demos -x 2 -y 2 -z 0.0 -Y 0.0">
+        <param name="use_sim_time" value="true"/>
+        
+    </node>
+
+
+    <node pkg="ros_gz_bridge" exec="parameter_bridge" output="screen"
+            args="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock
+                 /cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist
+                /odom@nav_msgs/msg/Odometry@gz.msgs.Odometry
+                /joint_states@sensor_msgs/msg/JointState@gz.msgs.Model
+                /tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V
+                /camera/image@sensor_msgs/msg/Image@gz.msgs.Image
+                /camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo
+                /imu@sensor_msgs/msg/Imu@gz.msgs.IMU
+                /lidar@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan
+                /lidar/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked
+                /rgbd/depth_image@sensor_msgs/msg/Image@gz.msgs.Image
+                /rgbd/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked" >
+        <param name="use_sim_time" value="true"/>
+    </node>
+
+    
+</launch>
