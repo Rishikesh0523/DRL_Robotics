@@ -56,7 +56,7 @@ cd ~/gz_ws/src
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/fuseai-fellowship/DRL-for-Mobile-Robot-Navigation.git
+git clone https://github.com/Rishikesh0523/DRL_Robotics.git
 ```
 
 ### 3. Initialize and Update rosdep
